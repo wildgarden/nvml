@@ -2,50 +2,12 @@ cmake_minimum_required(VERSION 3.7)
 project(nvml)
 
 set(CMAKE_C_STANDARD 99)
+# using local makefile instead of cmake
+# http://stackoverflow.com/questions/26918459/using-local-makefile-for-clion-instead-of-cmake
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_CXX_STANDARD 11)
 
 include(GNUInstallDirs)
-
-#macro(add_c_flag flag)
-#    if(${ARGC} GREATER 2)
-#        set(check_name ${ARGV2})
-#    else()
-#        string(REPLACE - _ flag2 ${flag})
-#        set(check_name C_HAS_${flag2})
-#    endif()
-#
-##    check_c_compiler_flag("${flag}" ${check_name})
-#
-#    if (${${check_name}})
-#        if (${ARGC} EQUAL 1)
-#            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${flag}")
-#        else()
-#            set(CMAKE_C_FLAGS_${ARGV1} "${CMAKE_C_FLAGS_${ARGV1}} ${flag}")
-#        endif()
-#    endif()
-#endmacro()
-#
-#add_c_flag(-Wall)
-#add_c_flag(-Wmissing-prototypes)
-#add_c_flag(-Wpointer-arith)
-#add_c_flag(-Wunused-macros)
-#add_c_flag(-Wsign-conversion)
-#add_c_flag(-Wsign-compare)
-#add_c_flag(-Wconversion)
-#add_c_flag(-Wunreachable-code-return)
-#add_c_flag(-Wmissing-variable-declarations)
-#
-#add_cxx_flag(-Wall)
-#add_cxx_flag(-Wpointer-arith)
-#add_cxx_flag(-Wunused-macros)
-#add_cxx_flag(-Wsign-conversion)
-#add_cxx_flag(-Wsign-compare)
-#add_cxx_flag(-Wconversion)
-#add_cxx_flag(-Wunreachable-code-return)
-#add_cxx_flag(-Wmissing-variable-declarations)
-#
-#add_c_flag(-fno-common)
-#add_cxx_flag(-fno-common)
 
 include_directories(src/common)
 include_directories(src/include)
@@ -81,39 +43,6 @@ set(SOURCE_FILES
     src/benchmarks/scenario.cpp
     src/benchmarks/scenario.hpp
     src/benchmarks/vmem.cpp
-#    src/common/dlsym.h
-#    src/common/file.c
-#    src/common/file.h
-#    src/common/file_linux.c
-#    src/common/file_windows.c
-#    src/common/mmap.c
-#    src/common/mmap.h
-#    src/common/mmap_linux.c
-#    src/common/mmap_windows.c
-#    src/common/os.h
-#    src/common/os_linux.c
-#        src/common/out.c
-#    src/common/out.h
-#    src/common/pmemcommon.h
-#    src/common/pool_hdr.c
-#    src/common/pool_hdr.h
-#    src/common/pool_hdr_linux.c
-#    src/common/pool_hdr_windows.c
-#    src/common/pthread_windows.c
-#    src/common/queue.h
-#    src/common/set.c
-#    src/common/set.h
-#    src/common/sys_util.h
-#    src/common/util.c
-#    src/common/util.h
-#    src/common/util_linux.c
-#    src/common/util_pmem.h
-#    src/common/util_windows.c
-#    src/common/uuid.c
-#    src/common/uuid.h
-#    src/common/uuid_linux.c
-#    src/common/uuid_windows.c
-#    src/common/valgrind_internal.h
     src/examples/libpmem/full_copy.c
     src/examples/libpmem/manpage.c
     src/examples/libpmem/simple_copy.c
@@ -218,54 +147,6 @@ set(SOURCE_FILES
     src/examples/libvmem/libart/arttree.h
     src/examples/libvmem/manpage.c
     src/examples/ex_common.h
-#    src/include/libpmemobj/atomic.h
-#    src/include/libpmemobj/atomic_base.h
-#    src/include/libpmemobj/base.h
-#    src/include/libpmemobj/ctl.h
-#    src/include/libpmemobj/iterator.h
-#    src/include/libpmemobj/iterator_base.h
-#    src/include/libpmemobj/lists_atomic.h
-#    src/include/libpmemobj/lists_atomic_base.h
-#    src/include/libpmemobj/pool.h
-#    src/include/libpmemobj/pool_base.h
-#    src/include/libpmemobj/thread.h
-#    src/include/libpmemobj/tx.h
-#    src/include/libpmemobj/tx_base.h
-#    src/include/libpmemobj/types.h
-#    src/include/libpmemobj++/detail/array_traits.hpp
-#    src/include/libpmemobj++/detail/check_persistent_ptr_array.hpp
-#    src/include/libpmemobj++/detail/common.hpp
-#    src/include/libpmemobj++/detail/conversions.hpp
-#    src/include/libpmemobj++/detail/integer_sequence.hpp
-#    src/include/libpmemobj++/detail/life.hpp
-#    src/include/libpmemobj++/detail/make_atomic_impl.hpp
-#    src/include/libpmemobj++/detail/persistent_ptr_base.hpp
-#    src/include/libpmemobj++/detail/pexceptions.hpp
-#    src/include/libpmemobj++/detail/specialization.hpp
-#    src/include/libpmemobj++/allocator.hpp
-#    src/include/libpmemobj++/condition_variable.hpp
-#    src/include/libpmemobj++/make_persistent.hpp
-#    src/include/libpmemobj++/make_persistent_array.hpp
-#    src/include/libpmemobj++/make_persistent_array_atomic.hpp
-#    src/include/libpmemobj++/make_persistent_atomic.hpp
-#    src/include/libpmemobj++/mutex.hpp
-#    src/include/libpmemobj++/p.hpp
-#    src/include/libpmemobj++/persistent_ptr.hpp
-#    src/include/libpmemobj++/pext.hpp
-#    src/include/libpmemobj++/pool.hpp
-#    src/include/libpmemobj++/shared_mutex.hpp
-#    src/include/libpmemobj++/timed_mutex.hpp
-#    src/include/libpmemobj++/transaction.hpp
-#    src/include/libpmemobj++/utils.hpp
-#    src/include/libpmem.h
-#    src/include/libpmemblk.h
-#    src/include/libpmemlog.h
-#    src/include/libpmemobj.h
-#    src/include/libpmempool.h
-#    src/include/librpmem.h
-#    src/include/libvmem.h
-#    src/include/libvmmalloc.h
-#    src/include/pmemcompat.h
     src/jemalloc/include/jemalloc/internal/arena.h
     src/jemalloc/include/jemalloc/internal/atomic.h
     src/jemalloc/include/jemalloc/internal/base.h
@@ -865,4 +746,7 @@ set(SOURCE_FILES
     src/windows/win_mmap.c
     utils/check_license/check-license.c)
 
-add_executable(nvml ${SOURCE_FILES})
+#add_executable(nvml ${SOURCE_FILES})
+#add_custom_target(nvml COMMAND make -C ${nvml_SOURCE_DIR}
+#        CLION_EXE_DIR=${PROJECT_BINARY_DIR})
+add_custom_target(nvml COMMAND make -C ${nvml_SOURCE_DIR})
