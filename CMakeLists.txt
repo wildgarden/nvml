@@ -749,4 +749,4 @@ set(SOURCE_FILES
 #add_executable(nvml ${SOURCE_FILES})
 #add_custom_target(nvml COMMAND make -C ${nvml_SOURCE_DIR}
 #        CLION_EXE_DIR=${PROJECT_BINARY_DIR})
-add_custom_target(nvml COMMAND make -C ${nvml_SOURCE_DIR})
+add_custom_target(nvml COMMAND +make -C ${nvml_SOURCE_DIR})
