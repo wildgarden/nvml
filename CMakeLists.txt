@@ -1,15 +1,30 @@
 cmake_minimum_required(VERSION 3.7)
-project(nvml)
+project(nvml C CXX)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 
+set(CMAKE_BUILD_TYPE Debug)
+
+include(CheckCCompilerFlag)
+include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
 
-include_directories(src/common)
-include_directories(src/include)
-include_directories(src/test/unittest)
-include_directories(src/examples)
+#Set your directories.  The dot representes the root application folder.
+#Thus my the path to my domain folder:
+set(NVML_INCLUDES ${CMAKE_SOURCE_DIR}/src/include)
+set(NVML_COMMON ${CMAKE_SOURCE_DIR}/src/common)
+set(NVML_TEST ${CMAKE_SOURCE_DIR}/src/test/unittest)
+set(NVML_EXAMPLES ${CMAKE_SOURCE_DIR}/src/examples)
+
+#Include the directories and now your cpp files will recognize your headers
+include_directories(${NVML_INCLUDES})
+include_directories(${NVML_COMMON})
+include_directories(${NVML_TEST})
+include_directories(${NVML_EXAMPLES})
+
+message(status "path to source dir ${CMAKE_SOURCE_DIR}")
+message(status "path to common dir ${NVML_COMMON}")
 
 set(SOURCE_FILES
         src/benchmarks/benchmark.hpp
@@ -42,191 +57,191 @@ set(SOURCE_FILES
         src/benchmarks/scenario.cpp
         src/benchmarks/scenario.hpp
         src/benchmarks/vmem.cpp
-        src/common/dlsym.h
-        src/common/file.c
-        src/common/file.h
-        src/common/file_linux.c
-        src/common/file_windows.c
-        src/common/mmap.c
-        src/common/mmap.h
-        src/common/mmap_linux.c
-        src/common/mmap_windows.c
-        src/common/os.h
-        src/common/os_linux.c
-        src/common/out.c
-        src/common/out.h
-        src/common/pmemcommon.h
-        src/common/pool_hdr.c
-        src/common/pool_hdr.h
-        src/common/pool_hdr_linux.c
-        src/common/pool_hdr_windows.c
-        src/common/pthread_windows.c
-        src/common/queue.h
-        src/common/set.c
-        src/common/set.h
-        src/common/sys_util.h
-        src/common/util.c
-        src/common/util.h
-        src/common/util_linux.c
-        src/common/util_pmem.h
-        src/common/util_windows.c
-        src/common/uuid.c
-        src/common/uuid.h
-        src/common/uuid_linux.c
-        src/common/uuid_windows.c
-        src/common/valgrind_internal.h
-        src/examples/libpmem/full_copy.c
-        src/examples/libpmem/manpage.c
-        src/examples/libpmem/simple_copy.c
-        src/examples/libpmemblk/assetdb/asset.h
-        src/examples/libpmemblk/assetdb/asset_checkin.c
-        src/examples/libpmemblk/assetdb/asset_checkout.c
-        src/examples/libpmemblk/assetdb/asset_list.c
-        src/examples/libpmemblk/assetdb/asset_load.c
-        src/examples/libpmemblk/manpage.c
-        src/examples/libpmemlog/logfile/addlog.c
-        src/examples/libpmemlog/logfile/logentry.h
-        src/examples/libpmemlog/logfile/printlog.c
-        src/examples/libpmemlog/manpage.c
-        src/examples/libpmemobj/array/array.c
-        src/examples/libpmemobj/cpp/queue.cpp
-        src/examples/libpmemobj/cpp_map/ctree_map_persistent.hpp
-        src/examples/libpmemobj/cpp_map/ctree_map_transient.hpp
-        src/examples/libpmemobj/cpp_map/map_cli.cpp
-        src/examples/libpmemobj/doc_snippets/make_persistent.cpp
-        src/examples/libpmemobj/doc_snippets/mutex.cpp
-        src/examples/libpmemobj/doc_snippets/persistent.cpp
-        src/examples/libpmemobj/doc_snippets/pool.cpp
-        src/examples/libpmemobj/doc_snippets/transaction.cpp
-        src/examples/libpmemobj/hashmap/hashmap.h
-        src/examples/libpmemobj/hashmap/hashmap_atomic.c
-        src/examples/libpmemobj/hashmap/hashmap_atomic.h
-        src/examples/libpmemobj/hashmap/hashmap_internal.h
-        src/examples/libpmemobj/hashmap/hashmap_tx.c
-        src/examples/libpmemobj/hashmap/hashmap_tx.h
-        src/examples/libpmemobj/libart/art.c
-        src/examples/libpmemobj/libart/art.h
-        src/examples/libpmemobj/libart/arttree.c
-        src/examples/libpmemobj/libart/arttree.h
-        src/examples/libpmemobj/libart/arttree_examine.c
-        src/examples/libpmemobj/libart/arttree_search.c
-        src/examples/libpmemobj/libart/arttree_structures.c
-        src/examples/libpmemobj/libart/arttree_structures.h
-        src/examples/libpmemobj/linkedlist/fifo.c
-        src/examples/libpmemobj/linkedlist/pmemobj_list.h
-        src/examples/libpmemobj/list_map/skiplist_map.c
-        src/examples/libpmemobj/list_map/skiplist_map.h
-        src/examples/libpmemobj/map/data_store.c
-        src/examples/libpmemobj/map/kv_protocol.h
-        src/examples/libpmemobj/map/kv_server.c
-        src/examples/libpmemobj/map/map.c
-        src/examples/libpmemobj/map/map.h
-        src/examples/libpmemobj/map/map_btree.c
-        src/examples/libpmemobj/map/map_btree.h
-        src/examples/libpmemobj/map/map_ctree.c
-        src/examples/libpmemobj/map/map_ctree.h
-        src/examples/libpmemobj/map/map_hashmap_atomic.c
-        src/examples/libpmemobj/map/map_hashmap_atomic.h
-        src/examples/libpmemobj/map/map_hashmap_tx.c
-        src/examples/libpmemobj/map/map_hashmap_tx.h
-        src/examples/libpmemobj/map/map_rbtree.c
-        src/examples/libpmemobj/map/map_rbtree.h
-        src/examples/libpmemobj/map/map_rtree.c
-        src/examples/libpmemobj/map/map_rtree.h
-        src/examples/libpmemobj/map/map_skiplist.c
-        src/examples/libpmemobj/map/map_skiplist.h
-        src/examples/libpmemobj/map/mapcli.c
-        src/examples/libpmemobj/panaconda/panaconda.cpp
-        src/examples/libpmemobj/panaconda/panaconda.hpp
-        src/examples/libpmemobj/pman/pman.cpp
-        src/examples/libpmemobj/pmemblk/obj_pmemblk.c
-        src/examples/libpmemobj/pmemlog/obj_pmemlog.c
-        src/examples/libpmemobj/pmemlog/obj_pmemlog_macros.c
-        src/examples/libpmemobj/pmemlog/obj_pmemlog_minimal.c
-        src/examples/libpmemobj/pmemlog/obj_pmemlog_simple.c
-        src/examples/libpmemobj/pmemobjfs/pmemobjfs.c
-        src/examples/libpmemobj/pminvaders/pminvaders.c
-        src/examples/libpmemobj/pminvaders/pminvaders2.c
-        src/examples/libpmemobj/string_store/layout.h
-        src/examples/libpmemobj/string_store/reader.c
-        src/examples/libpmemobj/string_store/writer.c
-        src/examples/libpmemobj/string_store_tx/layout.h
-        src/examples/libpmemobj/string_store_tx/reader.c
-        src/examples/libpmemobj/string_store_tx/writer.c
-        src/examples/libpmemobj/string_store_tx_type/layout.h
-        src/examples/libpmemobj/string_store_tx_type/reader.c
-        src/examples/libpmemobj/string_store_tx_type/writer.c
-        src/examples/libpmemobj/tree_map/btree_map.c
-        src/examples/libpmemobj/tree_map/btree_map.h
-        src/examples/libpmemobj/tree_map/ctree_map.c
-        src/examples/libpmemobj/tree_map/ctree_map.h
-        src/examples/libpmemobj/tree_map/rbtree_map.c
-        src/examples/libpmemobj/tree_map/rbtree_map.h
-        src/examples/libpmemobj/tree_map/rtree_map.c
-        src/examples/libpmemobj/tree_map/rtree_map.h
-        src/examples/libpmemobj/btree.c
-        src/examples/libpmemobj/list.hpp
-        src/examples/libpmemobj/lists.c
-        src/examples/libpmemobj/manpage.c
-        src/examples/libpmemobj/pi.c
-        src/examples/libpmemobj/setjmp.c
-        src/examples/libpmempool/manpage.c
-        src/examples/librpmem/basic.c
-        src/examples/librpmem/manpage.c
-        src/examples/libvmem/libart/art.c
-        src/examples/libvmem/libart/art.h
-        src/examples/libvmem/libart/arttree.c
-        src/examples/libvmem/libart/arttree.h
-        src/examples/libvmem/manpage.c
-        src/examples/ex_common.h
-        src/include/libpmemobj/atomic.h
-        src/include/libpmemobj/atomic_base.h
-        src/include/libpmemobj/base.h
-        src/include/libpmemobj/ctl.h
-        src/include/libpmemobj/iterator.h
-        src/include/libpmemobj/iterator_base.h
-        src/include/libpmemobj/lists_atomic.h
-        src/include/libpmemobj/lists_atomic_base.h
-        src/include/libpmemobj/pool.h
-        src/include/libpmemobj/pool_base.h
-        src/include/libpmemobj/thread.h
-        src/include/libpmemobj/tx.h
-        src/include/libpmemobj/tx_base.h
-        src/include/libpmemobj/types.h
-        src/include/libpmemobj++/detail/array_traits.hpp
-        src/include/libpmemobj++/detail/check_persistent_ptr_array.hpp
-        src/include/libpmemobj++/detail/common.hpp
-        src/include/libpmemobj++/detail/conversions.hpp
-        src/include/libpmemobj++/detail/integer_sequence.hpp
-        src/include/libpmemobj++/detail/life.hpp
-        src/include/libpmemobj++/detail/make_atomic_impl.hpp
-        src/include/libpmemobj++/detail/persistent_ptr_base.hpp
-        src/include/libpmemobj++/detail/pexceptions.hpp
-        src/include/libpmemobj++/detail/specialization.hpp
-        src/include/libpmemobj++/allocator.hpp
-        src/include/libpmemobj++/condition_variable.hpp
-        src/include/libpmemobj++/make_persistent.hpp
-        src/include/libpmemobj++/make_persistent_array.hpp
-        src/include/libpmemobj++/make_persistent_array_atomic.hpp
-        src/include/libpmemobj++/make_persistent_atomic.hpp
-        src/include/libpmemobj++/mutex.hpp
-        src/include/libpmemobj++/p.hpp
-        src/include/libpmemobj++/persistent_ptr.hpp
-        src/include/libpmemobj++/pext.hpp
-        src/include/libpmemobj++/pool.hpp
-        src/include/libpmemobj++/shared_mutex.hpp
-        src/include/libpmemobj++/timed_mutex.hpp
-        src/include/libpmemobj++/transaction.hpp
-        src/include/libpmemobj++/utils.hpp
-        src/include/libpmem.h
-        src/include/libpmemblk.h
-        src/include/libpmemlog.h
-        src/include/libpmemobj.h
-        src/include/libpmempool.h
-        src/include/librpmem.h
-        src/include/libvmem.h
-        src/include/libvmmalloc.h
-        src/include/pmemcompat.h
+       ${NVML_COMMON}/dlsym.h
+       ${NVML_COMMON}/file.c
+       ${NVML_COMMON}/file.h
+       ${NVML_COMMON}/file_linux.c
+       ${NVML_COMMON}/file_windows.c
+       ${NVML_COMMON}/mmap.c
+       ${NVML_COMMON}/mmap.h
+       ${NVML_COMMON}/mmap_linux.c
+       ${NVML_COMMON}/mmap_windows.c
+       ${NVML_COMMON}/os.h
+       ${NVML_COMMON}/os_linux.c
+       ${NVML_COMMON}/out.c
+       ${NVML_COMMON}/out.h
+       ${NVML_COMMON}/pmemcommon.h
+       ${NVML_COMMON}/pool_hdr.c
+       ${NVML_COMMON}/pool_hdr.h
+       ${NVML_COMMON}/pool_hdr_linux.c
+       ${NVML_COMMON}/pool_hdr_windows.c
+       ${NVML_COMMON}/pthread_windows.c
+       ${NVML_COMMON}/queue.h
+       ${NVML_COMMON}/set.c
+       ${NVML_COMMON}/set.h
+       ${NVML_COMMON}/sys_util.h
+       ${NVML_COMMON}/util.c
+       ${NVML_COMMON}/util.h
+       ${NVML_COMMON}/util_linux.c
+       ${NVML_COMMON}/util_pmem.h
+       ${NVML_COMMON}/util_windows.c
+       ${NVML_COMMON}/uuid.c
+       ${NVML_COMMON}/uuid.h
+       ${NVML_COMMON}/uuid_linux.c
+       ${NVML_COMMON}/uuid_windows.c
+       ${NVML_COMMON}/valgrind_internal.h
+       ${NVML_EXAMPLES}/libpmem/full_copy.c
+       ${NVML_EXAMPLES}/libpmem/manpage.c
+       ${NVML_EXAMPLES}/libpmem/simple_copy.c
+       ${NVML_EXAMPLES}/libpmemblk/assetdb/asset.h
+       ${NVML_EXAMPLES}/libpmemblk/assetdb/asset_checkin.c
+       ${NVML_EXAMPLES}/libpmemblk/assetdb/asset_checkout.c
+       ${NVML_EXAMPLES}/libpmemblk/assetdb/asset_list.c
+       ${NVML_EXAMPLES}/libpmemblk/assetdb/asset_load.c
+       ${NVML_EXAMPLES}/libpmemblk/manpage.c
+       ${NVML_EXAMPLES}/libpmemlog/logfile/addlog.c
+       ${NVML_EXAMPLES}/libpmemlog/logfile/logentry.h
+       ${NVML_EXAMPLES}/libpmemlog/logfile/printlog.c
+       ${NVML_EXAMPLES}/libpmemlog/manpage.c
+       ${NVML_EXAMPLES}/libpmemobj/array/array.c
+       ${NVML_EXAMPLES}/libpmemobj/cpp/queue.cpp
+       ${NVML_EXAMPLES}/libpmemobj/cpp_map/ctree_map_persistent.hpp
+       ${NVML_EXAMPLES}/libpmemobj/cpp_map/ctree_map_transient.hpp
+       ${NVML_EXAMPLES}/libpmemobj/cpp_map/map_cli.cpp
+       ${NVML_EXAMPLES}/libpmemobj/doc_snippets/make_persistent.cpp
+       ${NVML_EXAMPLES}/libpmemobj/doc_snippets/mutex.cpp
+       ${NVML_EXAMPLES}/libpmemobj/doc_snippets/persistent.cpp
+       ${NVML_EXAMPLES}/libpmemobj/doc_snippets/pool.cpp
+       ${NVML_EXAMPLES}/libpmemobj/doc_snippets/transaction.cpp
+       ${NVML_EXAMPLES}/libpmemobj/hashmap/hashmap.h
+       ${NVML_EXAMPLES}/libpmemobj/hashmap/hashmap_atomic.c
+       ${NVML_EXAMPLES}/libpmemobj/hashmap/hashmap_atomic.h
+       ${NVML_EXAMPLES}/libpmemobj/hashmap/hashmap_internal.h
+       ${NVML_EXAMPLES}/libpmemobj/hashmap/hashmap_tx.c
+       ${NVML_EXAMPLES}/libpmemobj/hashmap/hashmap_tx.h
+       ${NVML_EXAMPLES}/libpmemobj/libart/art.c
+       ${NVML_EXAMPLES}/libpmemobj/libart/art.h
+       ${NVML_EXAMPLES}/libpmemobj/libart/arttree.c
+       ${NVML_EXAMPLES}/libpmemobj/libart/arttree.h
+       ${NVML_EXAMPLES}/libpmemobj/libart/arttree_examine.c
+       ${NVML_EXAMPLES}/libpmemobj/libart/arttree_search.c
+       ${NVML_EXAMPLES}/libpmemobj/libart/arttree_structures.c
+       ${NVML_EXAMPLES}/libpmemobj/libart/arttree_structures.h
+       ${NVML_EXAMPLES}/libpmemobj/linkedlist/fifo.c
+       ${NVML_EXAMPLES}/libpmemobj/linkedlist/pmemobj_list.h
+       ${NVML_EXAMPLES}/libpmemobj/list_map/skiplist_map.c
+       ${NVML_EXAMPLES}/libpmemobj/list_map/skiplist_map.h
+       ${NVML_EXAMPLES}/libpmemobj/map/data_store.c
+       ${NVML_EXAMPLES}/libpmemobj/map/kv_protocol.h
+       ${NVML_EXAMPLES}/libpmemobj/map/kv_server.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map.h
+       ${NVML_EXAMPLES}/libpmemobj/map/map_btree.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map_btree.h
+       ${NVML_EXAMPLES}/libpmemobj/map/map_ctree.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map_ctree.h
+       ${NVML_EXAMPLES}/libpmemobj/map/map_hashmap_atomic.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map_hashmap_atomic.h
+       ${NVML_EXAMPLES}/libpmemobj/map/map_hashmap_tx.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map_hashmap_tx.h
+       ${NVML_EXAMPLES}/libpmemobj/map/map_rbtree.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map_rbtree.h
+       ${NVML_EXAMPLES}/libpmemobj/map/map_rtree.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map_rtree.h
+       ${NVML_EXAMPLES}/libpmemobj/map/map_skiplist.c
+       ${NVML_EXAMPLES}/libpmemobj/map/map_skiplist.h
+       ${NVML_EXAMPLES}/libpmemobj/map/mapcli.c
+       ${NVML_EXAMPLES}/libpmemobj/panaconda/panaconda.cpp
+       ${NVML_EXAMPLES}/libpmemobj/panaconda/panaconda.hpp
+       ${NVML_EXAMPLES}/libpmemobj/pman/pman.cpp
+       ${NVML_EXAMPLES}/libpmemobj/pmemblk/obj_pmemblk.c
+       ${NVML_EXAMPLES}/libpmemobj/pmemlog/obj_pmemlog.c
+       ${NVML_EXAMPLES}/libpmemobj/pmemlog/obj_pmemlog_macros.c
+       ${NVML_EXAMPLES}/libpmemobj/pmemlog/obj_pmemlog_minimal.c
+       ${NVML_EXAMPLES}/libpmemobj/pmemlog/obj_pmemlog_simple.c
+       ${NVML_EXAMPLES}/libpmemobj/pmemobjfs/pmemobjfs.c
+       ${NVML_EXAMPLES}/libpmemobj/pminvaders/pminvaders.c
+       ${NVML_EXAMPLES}/libpmemobj/pminvaders/pminvaders2.c
+       ${NVML_EXAMPLES}/libpmemobj/string_store/layout.h
+       ${NVML_EXAMPLES}/libpmemobj/string_store/reader.c
+       ${NVML_EXAMPLES}/libpmemobj/string_store/writer.c
+       ${NVML_EXAMPLES}/libpmemobj/string_store_tx/layout.h
+       ${NVML_EXAMPLES}/libpmemobj/string_store_tx/reader.c
+       ${NVML_EXAMPLES}/libpmemobj/string_store_tx/writer.c
+       ${NVML_EXAMPLES}/libpmemobj/string_store_tx_type/layout.h
+       ${NVML_EXAMPLES}/libpmemobj/string_store_tx_type/reader.c
+       ${NVML_EXAMPLES}/libpmemobj/string_store_tx_type/writer.c
+       ${NVML_EXAMPLES}/libpmemobj/tree_map/btree_map.c
+       ${NVML_EXAMPLES}/libpmemobj/tree_map/btree_map.h
+       ${NVML_EXAMPLES}/libpmemobj/tree_map/ctree_map.c
+       ${NVML_EXAMPLES}/libpmemobj/tree_map/ctree_map.h
+       ${NVML_EXAMPLES}/libpmemobj/tree_map/rbtree_map.c
+       ${NVML_EXAMPLES}/libpmemobj/tree_map/rbtree_map.h
+       ${NVML_EXAMPLES}/libpmemobj/tree_map/rtree_map.c
+       ${NVML_EXAMPLES}/libpmemobj/tree_map/rtree_map.h
+       ${NVML_EXAMPLES}/libpmemobj/btree.c
+       ${NVML_EXAMPLES}/libpmemobj/list.hpp
+       ${NVML_EXAMPLES}/libpmemobj/lists.c
+       ${NVML_EXAMPLES}/libpmemobj/manpage.c
+       ${NVML_EXAMPLES}/libpmemobj/pi.c
+       ${NVML_EXAMPLES}/libpmemobj/setjmp.c
+       ${NVML_EXAMPLES}/libpmempool/manpage.c
+       ${NVML_EXAMPLES}/librpmem/basic.c
+       ${NVML_EXAMPLES}/librpmem/manpage.c
+       ${NVML_EXAMPLES}/libvmem/libart/art.c
+       ${NVML_EXAMPLES}/libvmem/libart/art.h
+       ${NVML_EXAMPLES}/libvmem/libart/arttree.c
+       ${NVML_EXAMPLES}/libvmem/libart/arttree.h
+       ${NVML_EXAMPLES}/libvmem/manpage.c
+       ${NVML_EXAMPLES}/ex_common.h
+       ${NVML_INCLUDES}/libpmemobj/atomic.h
+       ${NVML_INCLUDES}/libpmemobj/atomic_base.h
+       ${NVML_INCLUDES}/libpmemobj/base.h
+       ${NVML_INCLUDES}/libpmemobj/ctl.h
+       ${NVML_INCLUDES}/libpmemobj/iterator.h
+       ${NVML_INCLUDES}/libpmemobj/iterator_base.h
+       ${NVML_INCLUDES}/libpmemobj/lists_atomic.h
+       ${NVML_INCLUDES}/libpmemobj/lists_atomic_base.h
+       ${NVML_INCLUDES}/libpmemobj/pool.h
+       ${NVML_INCLUDES}/libpmemobj/pool_base.h
+       ${NVML_INCLUDES}/libpmemobj/thread.h
+       ${NVML_INCLUDES}/libpmemobj/tx.h
+       ${NVML_INCLUDES}/libpmemobj/tx_base.h
+       ${NVML_INCLUDES}/libpmemobj/types.h
+       ${NVML_INCLUDES}/libpmemobj++/detail/array_traits.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/check_persistent_ptr_array.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/common.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/conversions.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/integer_sequence.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/life.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/make_atomic_impl.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/persistent_ptr_base.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/pexceptions.hpp
+       ${NVML_INCLUDES}/libpmemobj++/detail/specialization.hpp
+       ${NVML_INCLUDES}/libpmemobj++/allocator.hpp
+       ${NVML_INCLUDES}/libpmemobj++/condition_variable.hpp
+       ${NVML_INCLUDES}/libpmemobj++/make_persistent.hpp
+       ${NVML_INCLUDES}/libpmemobj++/make_persistent_array.hpp
+       ${NVML_INCLUDES}/libpmemobj++/make_persistent_array_atomic.hpp
+       ${NVML_INCLUDES}/libpmemobj++/make_persistent_atomic.hpp
+       ${NVML_INCLUDES}/libpmemobj++/mutex.hpp
+       ${NVML_INCLUDES}/libpmemobj++/p.hpp
+       ${NVML_INCLUDES}/libpmemobj++/persistent_ptr.hpp
+       ${NVML_INCLUDES}/libpmemobj++/pext.hpp
+       ${NVML_INCLUDES}/libpmemobj++/pool.hpp
+       ${NVML_INCLUDES}/libpmemobj++/shared_mutex.hpp
+       ${NVML_INCLUDES}/libpmemobj++/timed_mutex.hpp
+       ${NVML_INCLUDES}/libpmemobj++/transaction.hpp
+       ${NVML_INCLUDES}/libpmemobj++/utils.hpp
+       ${NVML_INCLUDES}/libpmem.h
+       ${NVML_INCLUDES}/libpmemblk.h
+       ${NVML_INCLUDES}/libpmemlog.h
+       ${NVML_INCLUDES}/libpmemobj.h
+       ${NVML_INCLUDES}/libpmempool.h
+       ${NVML_INCLUDES}/librpmem.h
+       ${NVML_INCLUDES}/libvmem.h
+       ${NVML_INCLUDES}/libvmmalloc.h
+       ${NVML_INCLUDES}/pmemcompat.h
         src/jemalloc/include/jemalloc/internal/arena.h
         src/jemalloc/include/jemalloc/internal/atomic.h
         src/jemalloc/include/jemalloc/internal/base.h
@@ -826,7 +841,7 @@ set(SOURCE_FILES
         src/windows/win_mmap.c
         utils/check_license/check-license.c)
 
-#add_executable(nvml ${SOURCE_FILES})
+add_executable(nvml ${SOURCE_FILES})
 #add_custom_target(nvml COMMAND make -C ${nvml_SOURCE_DIR}
 #        CLION_EXE_DIR=${PROJECT_BINARY_DIR})
-add_custom_target(nvml COMMAND +make -C ${nvml_SOURCE_DIR})
+#add_custom_target(nvml COMMAND +make -C ${nvml_SOURCE_DIR})
